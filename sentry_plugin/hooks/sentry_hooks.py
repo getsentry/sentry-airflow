@@ -19,8 +19,8 @@ original_clear_xcom = TaskInstance.clear_xcom_data
 @provide_session
 def new_clear_xcom(self, session=None):
     """
-	Add breadcrumbs just before task is executed.
-	"""
+    Add breadcrumbs just before task is executed.
+    """
     for t in self.task.get_flat_relatives(upstream=True):
         state = TaskInstance(t, self.execution_date).current_state()
         add_breadcrumb(
@@ -33,8 +33,8 @@ def new_clear_xcom(self, session=None):
 
 def add_sentry(self, task, execution_date, state=None):
     """
-	Change the TaskInstance init function to add costumized tagging.
-	"""
+    Change the TaskInstance init function to add costumized tagging.
+    """
     original_task_init(self, task, execution_date, state)
     with configure_scope() as scope:
         scope.set_tag("task_id", self.task_id)
@@ -46,8 +46,8 @@ def add_sentry(self, task, execution_date, state=None):
 
 class SentryHook(BaseHook):
     """
-	Wrap around the Sentry SDK.
-	"""
+    Wrap around the Sentry SDK.
+    """
 
     def __init__(self):
         sentry_celery = CeleryIntegration()
