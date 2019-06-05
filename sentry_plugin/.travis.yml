@@ -8,3 +8,4 @@ branches:
 		- master
 		- plugin_v1.1
 
+script: pytest tests
