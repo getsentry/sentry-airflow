@@ -10,22 +10,22 @@ A plugin for airflow dags and tasks that sets up [Sentry](sentry.io) for error l
 
 Install the `sentry-sdk`.
 
-```
+```shell
 $ pip install sentry-sdk
 ```
 
 Create a plugin folder in your `AIRFLOW_HOME` directory if you do not have one yet.
 
-```
-$ mkdir -p $AIRFLOW_HOME/plugins
 ```shell
+$ mkdir -p $AIRFLOW_HOME/plugins
+```
 
 Then clone this repository in there.
 
-```
+```shell
 $ cd $AIRFLOW_HOME/plugins
 $ git clone git@github.com:getsentry/sentry-airflow.git
-```shell
+```
 
 **Make sure you have setup your `SENTRY_DSN` in your environment variables!** The DSN can be found in Sentry by navigating to [Project Name] -> Project Settings -> Client Keys (DSN). Its template resembles the following: `'{PROTOCOL}://{PUBLIC_KEY}@{HOST}/{PROJECT_ID}'`
 
@@ -35,12 +35,12 @@ Install the `sentry-sdk` into Google Composer's [Python dependencies](https://cl
 
 Add this folder to your plugin directory
 
-```
+```shell
 $ gcloud composer environments storage plugins import --environment ENVIRONMENT_NAME \
     --location LOCATION \
     --source PATH_TO_LOCAL_FILE \
     --destination PATH_IN_SUBFOLDER
-```shell
+```
 
 (For more information checkout Google's [Docs](https://cloud.google.com/composer/docs/concepts/plugins#installing_a_plugin))
 
