@@ -1,11 +1,11 @@
 language: python
 
 python:
-	- "3.6"
+  - "3.6"
 
 branches:
-	only:
-		- master
-		- plugin_v1.1
+  only:
+    - master
+    - plugin_v1.1
 
 script: pytest sentry_plugin/tests
