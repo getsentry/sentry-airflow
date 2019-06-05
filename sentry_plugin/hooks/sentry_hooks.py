@@ -71,6 +71,7 @@ def add_sentry(self, task, execution_date, state=None):
     Change the TaskInstance init function to add customized tagging.
     """
     original_task_init(self, task, execution_date, state)
+    self.operator = self.task.__class__.__name__
     with configure_scope() as scope:
         for tag_name in SCOPE_TAGS:
             scope.set_tag(tag_name, getattr(self, tag_name))
@@ -94,7 +95,7 @@ class SentryHook(BaseHook):
             self.dsn = self.conn_id.host
             init(dsn=self.dsn, integrations=integrations)
         except AirflowException:
-            self.log.warn(
+            self.log.warning(
                 "Connection was not found, defaulting to environment variable."
             )
             init(integrations=integrations)
@@ -103,3 +104,4 @@ class SentryHook(BaseHook):
             TaskInstance.__init__ = add_sentry
             TaskInstance.clear_xcom_data = new_clear_xcom
             TaskInstance.ds = ds
+            TaskInstance._sentry_integration_ = True

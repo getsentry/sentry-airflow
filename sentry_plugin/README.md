@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/getsentry/sentry-airflow.svg?branch=master)](https://travis-ci.com/getsentry/sentry-airflow)
+
 # Sentry Airflow Plugin
 
 A plugin for airflow dags and tasks that sets up [Sentry](sentry.io) for error logging.  
