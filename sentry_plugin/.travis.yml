@@ -8,4 +8,5 @@ branches:
     - master
     - plugin_v1.1
 
-script: pytest sentry_plugin/tests
+script:
+  - pytest sentry_plugin/tests
