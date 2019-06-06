@@ -13,6 +13,7 @@ from airflow.models import TaskInstance
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk import configure_scope, add_breadcrumb, init
+from sqlalchemy import exc
 
 original_task_init = TaskInstance.__init__
 original_clear_xcom = TaskInstance.clear_xcom_data
@@ -95,7 +96,7 @@ class SentryHook(BaseHook):
             self.conn_id = self.get_connection("sentry_dsn")
             self.dsn = self.conn_id.host
             init(dsn=self.dsn, integrations=integrations)
-        except AirflowException:
+        except (AirflowException, exc.OperationalError):
             self.log.warning(
                 "Connection was not found, defaulting to environment variable."
             )
