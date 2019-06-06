@@ -4,7 +4,6 @@ python: 3.6
 branches:
   only:
     - master
-    - plugin_v1.1
 
 env:
   global:
