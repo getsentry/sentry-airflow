@@ -11,6 +11,3 @@ class SentryPlugin(AirflowPlugin):
     admin_views = []
     flask_blueprints = []
     menu_links = []
-
-
-SentryHook()

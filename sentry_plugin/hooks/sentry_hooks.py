@@ -3,6 +3,7 @@ import logging
 from flask import request
 
 from airflow import settings
+from airflow.configuration import conf
 from airflow.exceptions import AirflowException
 from airflow.hooks.base_hook import BaseHook
 from airflow.utils.db import provide_session
@@ -66,11 +67,11 @@ def new_clear_xcom(self, session=None):
     original_clear_xcom(self, session)
 
 
-def add_sentry(self, task, execution_date, state=None):
+def add_sentry(self, *args, **kwargs):
     """
     Change the TaskInstance init function to add customized tagging.
     """
-    original_task_init(self, task, execution_date, state)
+    original_task_init(self, *args, **kwargs)
     self.operator = self.task.__class__.__name__
     with configure_scope() as scope:
         for tag_name in SCOPE_TAGS:
@@ -105,3 +106,5 @@ class SentryHook(BaseHook):
             TaskInstance.clear_xcom_data = new_clear_xcom
             TaskInstance.ds = ds
             TaskInstance._sentry_integration_ = True
+
+SentryHook()
