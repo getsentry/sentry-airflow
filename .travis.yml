@@ -6,5 +6,8 @@ branches:
   - master
   - plugin_v1.1
 
+install
+  - pip install -r sentry_plugin/requirements-test.txt
+
 script:
   - pytest sentry_plugin/tests
