@@ -6,7 +6,7 @@ branches:
   - master
   - plugin_v1.1
 
-install
+install:
   - pip install -r sentry_plugin/requirements-test.txt
 
 script:
