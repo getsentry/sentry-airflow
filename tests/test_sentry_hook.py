@@ -9,7 +9,7 @@ from airflow.utils import timezone
 
 from sentry_sdk import configure_scope
 
-from sentry_airflow.hooks.sentry_hooks import (
+from sentry_plugin.hooks.sentry_hooks import (
     SentryHook,
     add_sentry,
     get_task_instance_attr,
