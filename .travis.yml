@@ -5,6 +5,10 @@ branches:
   only:
   - master
   - plugin_v1.1
+  
+env:
+  global:
+    - AIRFLOW_GPL_UNIDECODE=yes
 
 install:
   - pip install -r sentry_plugin/requirements.txt
