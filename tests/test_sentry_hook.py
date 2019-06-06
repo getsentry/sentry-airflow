@@ -28,9 +28,9 @@ TEST_SCOPE = {
     "ds": EXECUTION_DATE.strftime("%Y-%m-%d"),
     "operator": OPERATOR,
 }
-
+CRUMB_DATE = datetime.datetime(2019, 5, 15)
 CRUMB = {
-    "timestamp": datetime.datetime(2019, 5, 15),
+    "timestamp": CRUMB_DATE,
     "type": "default",
     "category": "data",
     "message": "Upstream Task: {}, State: {}, Operation: {}".format(
@@ -45,9 +45,9 @@ class MockQuery(object):
 	Mock Query for qhen session is called.
 	"""
 
-    def __init__(self, ti):
-        ti.state = STATE
-        self.arr = [ti]
+    def __init__(self, task_instance):
+        task_instance.state = STATE
+        self.arr = [task_instance]
 
     def filter(self, *args, **kwargs):
         return self
@@ -74,8 +74,8 @@ class TestSentryHook(unittest.TestCase):
 
     def test_add_sentry(self):
         """
-		Test adding tags.
-		"""
+        Test adding tags.
+        """
 
         # Already setup TaskInstance
         with configure_scope() as scope:
@@ -84,19 +84,19 @@ class TestSentryHook(unittest.TestCase):
 
     def test_get_task_instance_attr(self):
         """
-		Test getting object attributes.
-		"""
+        Test getting object attributes.
+        """
 
         state = get_task_instance_attr(self.ti, TASK_ID, "state", self.session)
         operator = get_task_instance_attr(self.ti, TASK_ID, "operator", self.session)
         self.assertEqual(state, STATE)
         self.assertEqual(operator, OPERATOR)
 
-    @freeze_time("2019-05-15")
+    @freeze_time(CRUMB_DATE.isoformat())
     def test_new_clear_xcom(self):
         """
-		Test adding breadcrumbs.
-		"""
+        Test adding breadcrumbs.
+        """
 
         new_clear_xcom(self.ti, self.session)
         self.task.get_flat_relatives.assert_called_once()

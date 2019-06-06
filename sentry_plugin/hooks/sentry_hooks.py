@@ -6,24 +6,25 @@ from airflow import settings
 from airflow.configuration import conf
 from airflow.exceptions import AirflowException
 from airflow.hooks.base_hook import BaseHook
-from airflow.utils.db import provide_session
 from airflow.models import DagBag
 from airflow.models import TaskInstance
+from airflow.utils.db import provide_session
 
+from sentry_sdk import configure_scope, add_breadcrumb, init
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.logging import ignore_logger
-from sentry_sdk import configure_scope, add_breadcrumb, init
 from sqlalchemy import exc
 
-original_task_init = TaskInstance.__init__
-original_clear_xcom = TaskInstance.clear_xcom_data
 SCOPE_TAGS = frozenset(("task_id", "dag_id", "execution_date", "ds", "operator"))
+
 
 @provide_session
 def get_task_instance_attr(self, task_id, attr, session=None):
     """
     Retrieve attribute from task.
     """
+    if session is None:
+        return None
     TI = TaskInstance
     ti = (
         session.query(TI)
@@ -55,12 +56,13 @@ def new_clear_xcom(self, session=None):
     Add breadcrumbs just before task is executed.
     """
     for task in self.task.get_flat_relatives(upstream=True):
-        state = get_task_instance_attr(self, task.task_id, "state")
-        operation = get_task_instance_attr(self, task.task_id, "operator")
+        task_id = task.task_id
+        state = get_task_instance_attr(self, task_id, "state")
+        operation = get_task_instance_attr(self, task_id, "operator")
         add_breadcrumb(
             category="data",
             message="Upstream Task: {}, State: {}, Operation: {}".format(
-                task.task_id, state, operation
+                task_id, state, operation
             ),
             level="info",
         )
@@ -104,10 +106,13 @@ class SentryHook(BaseHook):
             )
             init(integrations=integrations)
 
-        if not getattr(TaskInstance, "_sentry_integration_", False):
-            TaskInstance.__init__ = add_sentry
-            TaskInstance.clear_xcom_data = new_clear_xcom
-            TaskInstance.ds = ds
-            TaskInstance._sentry_integration_ = True
+        TaskInstance.__init__ = add_sentry
+        TaskInstance.clear_xcom_data = new_clear_xcom
+        TaskInstance.ds = ds
+        TaskInstance._sentry_integration_ = True
 
-SentryHook()
+
+if not getattr(TaskInstance, "_sentry_integration_", False):
+    original_task_init = TaskInstance.__init__
+    original_clear_xcom = TaskInstance.clear_xcom_data
+    SentryHook()
