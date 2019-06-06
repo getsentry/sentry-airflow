@@ -19,7 +19,6 @@ original_task_init = TaskInstance.__init__
 original_clear_xcom = TaskInstance.clear_xcom_data
 SCOPE_TAGS = frozenset(("task_id", "dag_id", "execution_date", "ds", "operator"))
 
-
 @provide_session
 def get_task_instance_attr(self, task_id, attr, session=None):
     """
@@ -84,7 +83,7 @@ class SentryHook(BaseHook):
     Wrap around the Sentry SDK.
     """
 
-    def __init__(self):
+    def __init__(self, sentry_conn_id=None):
         sentry_celery = CeleryIntegration()
         integrations = [sentry_celery]
         ignore_logger("airflow.task")
@@ -93,7 +92,10 @@ class SentryHook(BaseHook):
         self.dsn = None
 
         try:
-            self.conn_id = self.get_connection("sentry_dsn")
+            if sentry_conn_id == None:
+                self.conn_id = self.get_connection("sentry_dsn")
+            else:
+                self.conn_id = self.get_connection(sentry_conn_id)
             self.dsn = self.conn_id.host
             init(dsn=self.dsn, integrations=integrations)
         except (AirflowException, exc.OperationalError):
