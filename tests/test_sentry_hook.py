@@ -12,7 +12,7 @@ from airflow.utils import timezone
 
 from sentry_sdk import configure_scope
 
-from sentry_plugin.hooks.sentry_hook import SentryHook, get_task_instance
+from sentry_airflow.hooks.sentry_hook import SentryHook, get_task_instance
 
 EXECUTION_DATE = timezone.utcnow()
 DAG_ID = "test_dag"
@@ -62,7 +62,7 @@ class MockQuery:
 
 
 class TestSentryHook(unittest.TestCase):
-    @mock.patch("sentry_plugin.hooks.sentry_hook.SentryHook.get_connection")
+    @mock.patch("sentry_airflow.hooks.sentry_hook.SentryHook.get_connection")
     def setUp(self, mock_get_connection):
         self.assertEqual(TaskInstance._sentry_integration_, True)
         mock_get_connection.return_value = Connection(host="https://foo@sentry.io/123")

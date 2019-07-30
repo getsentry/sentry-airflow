@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "sentry-airflow"
+version = "1.4"
+description = "A plugin for Airflow dags and tasks that sets up Sentry for error logging."
+authors = []
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.5"
+apache-airflow = ">=1.10.2"
+sentry-sdk = ">=0.5.4"
+celery = ">=4.3.0"
+blinker = ">=1.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.0"
+freezegun = "*"
+
+[tool.poetry.plugins."airflow.plugins"]
+"airflow-sentry" = "sentry_airflow:SentryPlugin"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
