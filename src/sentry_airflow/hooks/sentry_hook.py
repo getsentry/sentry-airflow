@@ -1,3 +1,4 @@
+import os
 from airflow import configuration
 from airflow.exceptions import AirflowException
 from airflow.hooks.base_hook import BaseHook
@@ -101,7 +102,7 @@ class SentryHook(BaseHook):
             else:
                 self.conn_id = self.get_connection(sentry_conn_id)
             self.dsn = self.conn_id.host
-            init(dsn=self.dsn, integrations=integrations)
+            init(dsn=self.dsn, integrations=integrations, environment=os.get_env('ENVIRONMENT', ''))
         except (AirflowException, exc.OperationalError):
             self.log.warning(
                 "Connection was not found, defaulting to environment variable."
