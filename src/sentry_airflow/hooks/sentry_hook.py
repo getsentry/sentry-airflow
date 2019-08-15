@@ -1,4 +1,5 @@
 import os
+import subprocess
 from airflow import configuration
 from airflow.exceptions import AirflowException
 from airflow.hooks.base_hook import BaseHook
@@ -42,6 +43,7 @@ def add_sentry(self, *args, **kwargs):
     with configure_scope() as scope:
         for tag_name in SCOPE_TAGS:
             scope.set_tag(tag_name, getattr(self, tag_name))
+        scope.set_tag("git_hash", subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']))
 
     original_pre_execute = self.task.pre_execute
 
