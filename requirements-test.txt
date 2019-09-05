@@ -1,2 +1,2 @@
-airflow
+apache-airflow
 freezegun
