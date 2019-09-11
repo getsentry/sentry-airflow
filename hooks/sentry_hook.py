@@ -91,7 +91,7 @@ def get_dsn(conn):
     if None in (conn.conn_type, conn.login):
         return conn.host
 
-    dsn = f"{conn.conn_type}://{conn.login}@{conn.host}/{conn.schema}"
+    dsn = '{conn.conn_type}://{conn.login}@{conn.host}/{conn.schema}'.format(conn=conn)
     return dsn
 
 class SentryHook(BaseHook):
