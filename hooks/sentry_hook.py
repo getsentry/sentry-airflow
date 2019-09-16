@@ -117,10 +117,17 @@ class SentryHook(BaseHook):
             dsn = None
             conn = self.get_connection(sentry_conn_id)
             dsn = get_dsn(conn)
-            init(dsn=dsn, integrations=integrations)
+            init_args = {'dsn':dsn, 'integrations':integrations}
+
+            environment = conn.extra_dejson.get('environment')
+            if environment:
+                init_args.update({'environment':environment})
+
         except (AirflowException, exc.OperationalError, exc.ProgrammingError):
             self.log.debug("Sentry defaulting to environment variable.")
-            init(integrations=integrations)
+            init_args = {'integrations':integrations}
+
+        init(**init_args)
 
         TaskInstance._run_raw_task = add_sentry
         TaskInstance._sentry_integration_ = True
