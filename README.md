@@ -26,7 +26,7 @@ Then clone this repository in there:
 
 ```shell
 $ cd $AIRFLOW_HOME/plugins
-$ git clone git@github.com:getsentry/sentry-airflow.git
+ $ git clone git@github.com:getsentry/sentry_airflow.git
 $ mv sentry-airflow sentry_airflow
 ```
 
