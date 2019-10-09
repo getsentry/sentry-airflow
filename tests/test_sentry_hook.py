@@ -134,3 +134,11 @@ class TestSentryHook(unittest.TestCase):
         conn = Connection(conn_type="http", login=None, host="https://foo@sentry.io/123")
         dsn = get_dsn(conn)
         self.assertEqual(dsn, "https://foo@sentry.io/123")
+
+    def test_get_environment_from_extra_parameter(self):
+        """
+        Test getting environment from extra parameter
+        """
+        conn = Connection(extra='{"environment": "development"}')
+        environment = conn.extra_dejson.get("environment")
+        self.assertEqual(environment, "development")
